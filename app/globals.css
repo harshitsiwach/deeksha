@@ -63,6 +63,18 @@ h2.serif { font-size:clamp(22px,5vw,30px); margin:28px 4px 10px; }
 .music-wrap { text-align:center; margin:20px 0 6px; padding:0 4px; }
 .music-btn { border-radius:999px; padding:12px 22px; border:1px solid #e9b9c8; background:#fff; cursor:pointer; font-weight:600; font-size:15px; width:100%; max-width:360px; min-height:48px; }
 .page.farewell .music-btn { background:transparent; color:#dbe6f7; border-color:#ffffff33; }
+.music-btn.pulse { animation:pulse 1.6s ease-in-out infinite; border-color:var(--rose); }
+@keyframes pulse { 0%,100% { transform:scale(1); box-shadow:0 0 0 0 #ff4d7e55; } 50% { transform:scale(1.03); box-shadow:0 0 0 10px #ff4d7e00; } }
+
+/* Minimal romantic flight card */
+.flight.minimal { text-align:center; }
+.flight.minimal .flight-head { justify-content:center; gap:12px; }
+.route-simple { display:flex; align-items:center; justify-content:center; gap:14px; margin:12px 0 4px; }
+.route-simple .city { font-family:'Playfair Display',serif; font-size:clamp(28px,8vw,36px); font-weight:800; letter-spacing:1px; }
+.route-simple .arrow { color:var(--rose); font-size:20px; }
+.page.farewell .route-simple .arrow { color:#8fa8cf; }
+.places { font-size:14px; opacity:.8; }
+.times { font-size:12.5px; opacity:.65; margin-top:4px; line-height:1.6; }
 .footer { text-align:center; margin-top:34px; opacity:.75; font-size:14px; line-height:1.6; padding:0 8px; text-wrap:balance; }
 .badge { display:inline-block; padding:8px 14px; border-radius:999px; background:#2b2130; color:#ffd9e4; font-size:11px; letter-spacing:1.5px; line-height:1.4; max-width:100%; }
 .page.farewell .badge { background:#ffffff14; color:#cdd9ef; }
