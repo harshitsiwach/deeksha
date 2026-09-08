@@ -1,21 +1,44 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
+
+function useCanvasSize(ref: RefObject<HTMLCanvasElement>) {
+  const size = () => {
+    const c = ref.current;
+    if (!c || !c.parentElement) return { w: 0, h: 0 };
+    const r = c.parentElement.getBoundingClientRect();
+    const w = Math.max(1, Math.floor(r.width));
+    const h = Math.max(1, Math.floor(r.height));
+    // Cap DPR at 2 for perf, 1 on small screens
+    const dpr = Math.min(window.devicePixelRatio || 1, window.innerWidth < 560 ? 1 : 2);
+    c.width = Math.floor(w * dpr);
+    c.height = Math.floor(h * dpr);
+    const ctx = c.getContext("2d");
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { w, h };
+  };
+  return size;
+}
 
 export function HeartsCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const getSize = useCanvasSize(ref);
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = ref.current!;
     const ctx = c.getContext("2d")!;
-    let w = (c.width = c.offsetWidth);
-    let h = (c.height = c.offsetHeight);
+    let { w, h } = getSize();
+    const isMobile = window.innerWidth < 560;
     const onR = () => {
-      w = c.width = c.offsetWidth;
-      h = c.height = c.offsetHeight;
+      const s = getSize();
+      w = s.w;
+      h = s.h;
     };
     window.addEventListener("resize", onR);
-    const parts = Array.from({ length: 45 }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
+    window.addEventListener("orientationchange", onR);
+    const COUNT = isMobile ? 22 : 45;
+    const parts = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * Math.max(w, 320),
+      y: Math.random() * Math.max(h, 600),
       s: 8 + Math.random() * 16,
       v: 0.4 + Math.random() * 1.1,
       o: 0.25 + Math.random() * 0.55,
@@ -42,6 +65,7 @@ export function HeartsCanvas() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onR);
+      window.removeEventListener("orientationchange", onR);
     };
   }, []);
   return <canvas ref={ref} className="fx-canvas" aria-hidden />;
@@ -49,19 +73,24 @@ export function HeartsCanvas() {
 
 export function RainCanvas() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const getSize = useCanvasSize(ref);
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = ref.current!;
     const ctx = c.getContext("2d")!;
-    let w = (c.width = c.offsetWidth);
-    let h = (c.height = c.offsetHeight);
+    let { w, h } = getSize();
+    const isMobile = window.innerWidth < 560;
     const onR = () => {
-      w = c.width = c.offsetWidth;
-      h = c.height = c.offsetHeight;
+      const s = getSize();
+      w = s.w;
+      h = s.h;
     };
     window.addEventListener("resize", onR);
-    const drops = Array.from({ length: 110 }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
+    window.addEventListener("orientationchange", onR);
+    const COUNT = isMobile ? 55 : 110;
+    const drops = Array.from({ length: COUNT }, () => ({
+      x: Math.random() * Math.max(w, 320),
+      y: Math.random() * Math.max(h, 600),
       l: 10 + Math.random() * 18,
       v: 4 + Math.random() * 6,
       o: 0.15 + Math.random() * 0.3,
@@ -90,6 +119,7 @@ export function RainCanvas() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onR);
+      window.removeEventListener("orientationchange", onR);
     };
   }, []);
   return <canvas ref={ref} className="fx-canvas" aria-hidden />;
